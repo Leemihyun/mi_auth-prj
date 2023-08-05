@@ -1,37 +1,53 @@
 import React, {useEffect, useState} from 'react';
 import axios from "axios";
-import {Button, Card, Col, Container, Row} from "react-bootstrap";
+import {Button, Card, Col, Container, Row, Spinner} from "react-bootstrap";
+import {usePaginatedFetchMovies} from "../services/PaginateMovies";
 
 const MovieList = () => {
-    const [movies, setMovies] = useState([]);
-    const getMovies = async () => {
-        try {
-            const url = 'https://api.themoviedb.org/3/movie/now_playing?language=en-US&page=1';
-            const options = {
-                method: 'GET',
-                headers: {
-                    accept: 'application/json',
-                    Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIxYmI5MGJjZGRkM2U4YTVmN2ExNWUxMTI1ZjM2MWNhYyIsInN1YiI6IjY0YzUxODYyOWI2ZTQ3MDBmZjM2NDc3YSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.jSXr5VU0QSguF3cxV42p2Z7EJmO9J-Y6vp9mJRW7Y7g'
-                }
-            };
-            const {data, status} = await axios.get(url, options);
-            console.log('data ? : ', data.results)
-            console.log('status ? : ', status)
-            if( status === 200){
-                setMovies(data.results)
-            }
-        } catch (err) {
-            console.log('error ! : ', err.message)
-        }
-    }
-    useEffect(() => {
-        getMovies();
-    }, []);
 
+    const {data : movies, isLoading } = usePaginatedFetchMovies(1);
+    console.log('data ? ', movies)
+    // const [movies, setMovies] = useState([]);
+    // const getMovies = async () => {
+    //     try {
+    //         const url = 'https://api.themoviedb.org/3/movie/now_playing?language=en-US&page=1';
+    //         const options = {
+    //             method: 'GET',
+    //             headers: {
+    //                 accept: 'application/json',
+    //                 Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIxYmI5MGJjZGRkM2U4YTVmN2ExNWUxMTI1ZjM2MWNhYyIsInN1YiI6IjY0YzUxODYyOWI2ZTQ3MDBmZjM2NDc3YSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.jSXr5VU0QSguF3cxV42p2Z7EJmO9J-Y6vp9mJRW7Y7g'
+    //             }
+    //         };
+    //         const {data, status} = await axios.get(url, options);
+    //         console.log('data ? : ', data.results)
+    //         console.log('status ? : ', status)
+    //         if( status === 200){
+    //             setMovies(data.results)
+    //         }
+    //     } catch (err) {
+    //         console.log('error ! : ', err.message)
+    //     }
+    // }
+    // useEffect(() => {
+    //     getMovies();
+    // }, []);
+    //
     const imgUrl = `https://image.tmdb.org/t/p/w500`;
+    if ( isLoading) {
+        return (
+            <Container>
+                <Row className={"justify-content-md-center"} >
+                    <Spinner animation="border" role={"status"}>
+                        <span> Loading ...</span>
+                    </Spinner>
+                </Row>
+            </Container>
+        );
+    }
     return (
             <Container>
                 <h1 className={"text-center"} style={{ margin: "100px", fontSize: '68px'}}>Movies List</h1>
+                {/*{data.length}*/}
                 <Row>
                     { movies && movies.map(( movie , i) =>(
                         <Col className={"mb-3"} key={i}>
