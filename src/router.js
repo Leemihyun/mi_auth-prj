@@ -8,6 +8,7 @@ import PeopleList from "./pages/PeopleList";
 import CatsList from "./pages/CatsList";
 import TvShowList from "./pages/TvShowList";
 import ResetPassword from "./pages/ResetPassword";
+import Detail from "./pages/Detail";
 
 const router = createBrowserRouter([
     {
@@ -41,6 +42,14 @@ const router = createBrowserRouter([
     {
         path: '/reset-password',
         element:<ResetPassword /> ,
+    },
+    {
+        path: '/movie/:movieId',
+        element:<Detail /> ,
+    },
+    {
+        path: '/tv/:tvId',
+        element:<Detail /> ,
     },
 
 ]);

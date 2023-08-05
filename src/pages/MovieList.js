@@ -59,7 +59,7 @@ const MovieList = () => {
                                     <Card.Text>
                                         { movie.overview.length > 20 ? movie.overview.slice(0, 80).concat(`...`) : movie.overview }
                                     </Card.Text>
-                                    <Button variant="outline-info" size="sm">Check Movie's Info</Button>
+                                    <Button variant="outline-info" size="sm" href={`/movie/${movie.id}`}>Check Movie's Info</Button>
                                 </Card.Body>
                             </Card>
 

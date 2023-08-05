@@ -47,7 +47,7 @@ const TvShowList = () => {
                                 <Card.Text>
                                     { tvShow.overview.length > 20 ? tvShow.overview.slice(0, 80).concat(`...`) : tvShow.overview }
                                 </Card.Text>
-                                <Button variant="outline-info" size="sm">Check Info</Button>
+                                <Button variant="outline-info" size="sm" href={`/tv/${tvShow.id}`}>Check Info</Button>
                             </Card.Body>
                         </Card>
 

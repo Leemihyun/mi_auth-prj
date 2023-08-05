@@ -1,25 +1,29 @@
 import React, {useEffect, useState} from 'react';
 import axios from "axios";
 import {Button, Card, Col, Container, Row} from "react-bootstrap";
+import {useFetchNewsList} from "../services/PaginatedNews";
 
 const NewsList = () => {
-    const [ news, setNews] = useState([]);
-    const getNews = async () =>{
-        try {
-            const url = 'https://newsapi.org/v2/everything?q=bitcoin&apiKey=be2cab0836864ae296997f8da65c0861'
-            const { data, status} = await axios.get(url);
-            console.log('data ? ', data)
-            console.log('status ? ', status)
-            if (status === 200){
-                setNews(data.articles);
-            }
-        } catch (err){
-            console.log('error message : ', err.message)
-        }
-    }
-    useEffect(() => {
-        getNews();
-    }, []);
+    // const [ news, setNews] = useState([]);
+    // const getNews = async () =>{
+    //     try {
+    //         const url = 'https://newsapi.org/v2/everything?q=bitcoin&apiKey=be2cab0836864ae296997f8da65c0861'
+    //         const { data, status} = await axios.get(url);
+    //         console.log('data ? ', data)
+    //         console.log('status ? ', status)
+    //         if (status === 200){
+    //             setNews(data.articles);
+    //         }
+    //     } catch (err){
+    //         console.log('error message : ', err.message)
+    //     }
+    // }
+    // useEffect(() => {
+    //     getNews();
+    // }, []);
+
+    const {data : news} = useFetchNewsList();
+    console.log('====> news ? ', news)
     const imgUrl = `https://image.tmdb.org/t/p/w500`;
     return (
         <Container>
