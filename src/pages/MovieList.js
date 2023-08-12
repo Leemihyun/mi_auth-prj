@@ -1,7 +1,8 @@
-import React, {useEffect, useState} from 'react';
-import axios from "axios";
-import {Button, Card, Col, Container, Row, Spinner} from "react-bootstrap";
+import React from 'react';
+import {Container, Row, Spinner} from "react-bootstrap";
 import {usePaginatedFetchMovies} from "../services/PaginateMovies";
+import ContainerView from "../components/ContainerView";
+import CardView from "../components/CardView";
 
 const MovieList = () => {
 
@@ -32,7 +33,7 @@ const MovieList = () => {
     //     getMovies();
     // }, []);
     //
-    const imgUrl = `https://image.tmdb.org/t/p/w500`;
+
     if ( isLoading) {
         return (
             <Container>
@@ -44,29 +45,15 @@ const MovieList = () => {
             </Container>
         );
     }
-    return (
-            <Container>
-                <h1 className={"text-center"} style={{ margin: "100px", fontSize: '68px'}}>Movies List</h1>
-                {/*{data.length}*/}
-                <Row>
-                    { movies && movies.map(( movie , i) =>(
-                        <Col className={"mb-3"} key={i}>
-                            <Card style={{ width: '18rem' }}>
-                                <Card.Img style={{height: '100%', width: 'auto'}} variant="top" src={movie.backdrop_path
-                                    ? imgUrl + movie.backdrop_path : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTkCMT1rKQSmpSiWrjn460FlW3dI2WThcBiwA&usqp=CAU"} />
-                                <Card.Body style={{ display: 'flex', flexDirection:'column', alignItems: 'center'}}>
-                                    <Card.Title className={"mbr-fonts-style"} style={{textAlign: 'center'}}>{ movie.title.length > 20 ? movie.title.slice(0, 20).concat(`...`) : movie.title }</Card.Title>
-                                    <Card.Text>
-                                        { movie.overview.length > 20 ? movie.overview.slice(0, 80).concat(`...`) : movie.overview }
-                                    </Card.Text>
-                                    <Button variant="outline-info" size="sm" href={`/movie/${movie.id}`}>Check Movie's Info</Button>
-                                </Card.Body>
-                            </Card>
 
-                        </Col>
-                    ))}
-                </Row>
-            </Container>
+    return (
+        <ContainerView title={'Movies List'} >
+            <Row>
+                { movies && movies.map(( movie , i) =>(
+                    <CardView data={movie} provider={'movie'} key={i} />
+                ))}
+            </Row>
+        </ContainerView>
     );
 };
 
