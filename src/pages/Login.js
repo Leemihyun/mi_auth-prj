@@ -25,6 +25,9 @@ const Login = () => {
         console.log(" data : " , data)
         console.log(" status : " , status)
         if (status === 200 ){
+
+            localStorage.setItem('token', data.data.token)
+
             navigate('/profile');
             setIsLoading(false)
         }
