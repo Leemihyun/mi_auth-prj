@@ -9,6 +9,7 @@ import CatsList from "./pages/CatsList";
 import TvShowList from "./pages/TvShowList";
 import ResetPassword from "./pages/ResetPassword";
 import Detail from "./pages/Detail";
+import Profile from "./pages/Profile";
 
 const router = createBrowserRouter([
     {
@@ -50,6 +51,10 @@ const router = createBrowserRouter([
     {
         path: '/tv/:tvId',
         element:<Detail /> ,
+    },
+    {
+        path: '/profile',
+        element:<Profile /> ,
     },
 
 ]);

@@ -1,14 +1,17 @@
 import React, {useState} from 'react';
-import {Button, Card, Col, Container, Form, ListGroup, Row} from "react-bootstrap";
+import {Button, Card, Col, Container, Form, ListGroup, Row, Spinner} from "react-bootstrap";
 import axios from "axios";
 import {useNavigate} from "react-router-dom";
+import authApi from "../services/authApi";
+import {useMutation, useQuery} from "@tanstack/react-query";
 
 const Login = () => {
     const navigate = useNavigate();
+    const [isLoading, setIsLoading] = useState(false)
 
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
-
+    console.log(email, password)
     const submitHandler = async (e) => {
         e.preventDefault();
         const userInput = {
@@ -16,14 +19,29 @@ const Login = () => {
             password,
         }
         console.log('userInput ? ', userInput)
+        setIsLoading(true);
 
-        const {data, status} = await axios.post("http://localhost:8000/api/auth/login", userInput)
+        const {data, status} = await authApi.post("/login", userInput)
         console.log(" data : " , data)
         console.log(" status : " , status)
-        if (status === 201){
-            navigate('/')
+        if (status === 200 ){
+            navigate('/profile');
+            setIsLoading(false)
         }
     }
+    if ( isLoading) {
+
+        return (
+            <Container>
+                <Row className={"justify-content-md-center"} >
+                    <Spinner animation="border" role={"status"}>
+                        <span> Loading ...</span>
+                    </Spinner>
+                </Row>
+            </Container>
+        );
+    }
+
     return (
         <Container className="flex-column align-items-center justify-content-center">
         <h1 style={{ textAlign: "center", margin: "100px", fontSize: '68px'}}>LogIn</h1>
@@ -31,13 +49,20 @@ const Login = () => {
             <Form onSubmit={submitHandler} >
                 <Form.Group className="mb-3" controlId="formBasicEmail">
                     <Form.Label>Email address</Form.Label>
-                    <Form.Control type="email" placeholder="Enter email" value={email}
-                                  onChange={(e) => setEmail(e.target.value)}/>
+                    <Form.Control
+                        type="email"
+                        placeholder="Enter email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}/>
                 </Form.Group>
 
                 <Form.Group className="mb-3" controlId="formBasicPassword">
                     <Form.Label>Password</Form.Label>
-                    <Form.Control type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
+                    <Form.Control
+                        type="password"
+                        placeholder="Password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)} />
                 </Form.Group>
                 {/*<Form.Group className="mb-3" controlId="formBasicCheckbox">*/}
                 {/*    <Form.Check type="checkbox" label="Check me out" />*/}

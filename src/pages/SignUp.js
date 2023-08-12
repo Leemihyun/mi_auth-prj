@@ -3,6 +3,7 @@ import {Button, Card, Col, Container, Form, InputGroup, Row} from "react-bootstr
 import {ReCAPTCHA} from "react-google-recaptcha";
 import axios from "axios";
 import {useNavigate} from "react-router-dom";
+import authApi from "../services/authApi";
 
 const SignUp = () => {
     const navigate = useNavigate();
@@ -36,7 +37,7 @@ const SignUp = () => {
         }
         console.log('userInput ? ', userInput)
 
-        const {data, status} = await axios.post("http://localhost:8000/api/auth/signup", userInput)
+        const {data, status} = await authApi.post("/signup", userInput)
         console.log(" data : " , data)
         console.log(" status : " , status)
         if (status === 201){
