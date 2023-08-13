@@ -1,43 +1,19 @@
-import React, {useEffect, useState} from 'react';
-import {useQuery} from "@tanstack/react-query";
-import axios from "axios";
-import {Container, Image, Row, Spinner} from "react-bootstrap";
+import React, {useEffect} from 'react';
+import {Container, Row, Spinner} from "react-bootstrap";
 import ContainerView from "../components/ContainerView";
 import useFetchProfile from "../services/FetchProfile";
+import {useNavigate} from "react-router-dom";
 
 const Profile = () => {
+    const navigate = useNavigate();
     const token = localStorage.getItem('token')
     const {data: userInfo, isLoading} = useFetchProfile(token);
-    // const [isLoading, setIsLoading] = useState(false)
-    // const [userInfo, setUserInfo] = useState('')
-    //
-    // console.log('token ? ', token)
-    //
-    // const getUserInfo = async () => {
-    //     try{
-    //         const url = 'http://localhost:8000/api/auth';
-    //         const option = {
-    //             headers: {
-    //                 Authorization: `Bearer ${token}`
-    //             }
-    //         }
-    //         const {data, status}  = await axios.get(url, option)
-    //         setIsLoading(true)
-    //         console.log('profileData', data)
-    //
-    //         if (status === 200 ){
-    //             setUserInfo(data.data);
-    //             setIsLoading(false)
-    //
-    //         }
-    //     } catch (err){
-    //         console.log(err)
-    //     }
-    // }
-    //
-    // useEffect(() => {
-    //     getUserInfo();
-    // }, []);
+
+    useEffect(() => {
+        if(!token){
+            navigate('/login');
+        }
+    }, []);
 
     if ( isLoading) {
         return (

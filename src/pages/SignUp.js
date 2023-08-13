@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Button, Card, Col, Container, Form, InputGroup, Row} from "react-bootstrap";
 import {ReCAPTCHA} from "react-google-recaptcha";
 import axios from "axios";
@@ -22,6 +22,7 @@ const SignUp = () => {
     const [confirmPassword, setConfirmPassword] = useState("")
     const [isMarketingAgree, setIsMarketingAgree] = useState(false)
     const [isPersonalInfoAgree, setIsPersonalInfoAgree] = useState(false)
+    const token = localStorage.getItem('token')
 
     const submitHandler = async (e) => {
         e.preventDefault();
@@ -44,6 +45,13 @@ const SignUp = () => {
             navigate('/login')
         }
     }
+
+    useEffect(() => {
+        if (token) {
+            navigate('/profile')
+        }
+    }, []);
+
     return (
         <Container
             className="flex-column align-items-center justify-content-center"
