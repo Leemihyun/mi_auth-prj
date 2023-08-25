@@ -1,22 +1,30 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Button, Container, Form, Row, Spinner} from "react-bootstrap";
 import {useNavigate} from "react-router-dom";
+import {login} from "../actions/userActions";
+import {useDispatch, useSelector} from "react-redux";
 
 const Login = () => {
     const navigate = useNavigate();
-    const [isLoading, setIsLoading] = useState(false)
+    // const [isLoading, setIsLoading] = useState(false)
+    const dispatch = useDispatch()
 
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
     const token = localStorage.getItem('token')
     console.log(email, password)
 
+    const userLogin = useSelector((state) => state.userLogin)
+    const {loading, loginInfo, error} = userLogin
+
     const submitHandler = async (e) => {
         e.preventDefault();
-        // const userInput = {
-        //     email,
-        //     password,
-        // }
+        const loginInfo = {
+            email,
+            password,
+        }
+        console.log('loginInfo ? ', loginInfo)
+        dispatch(login(loginInfo))
         // console.log('userInput ? ', userInput)
         // setIsLoading(true);
         //
@@ -32,28 +40,32 @@ const Login = () => {
         // }
     }
 
-    // useEffect(() => {
-    //     if (token) {
-    //         navigate('/profile')
-    //     }
-    // }, []);
+    useEffect(() => {
+        if(loginInfo){
+            navigate('/profile')
+        }
+        // if (token) {
+        //     navigate('/profile')
+        // }
+    }, [navigate, loginInfo]);
 
-    if ( isLoading) {
-
-        return (
-            <Container>
-                <Row className={"justify-content-md-center"} >
-                    <Spinner animation="border" role={"status"}>
-                        <span> Loading ...</span>
-                    </Spinner>
-                </Row>
-            </Container>
-        );
-    }
+    // if ( isLoading) {
+    //
+    //     return (
+    //         <Container>
+    //             <Row className={"justify-content-md-center"} >
+    //                 <Spinner animation="border" role={"status"}>
+    //                     <span> Loading ...</span>
+    //                 </Spinner>
+    //             </Row>
+    //         </Container>
+    //     );
+    // }
 
     return (
         <Container className="flex-column align-items-center justify-content-center">
         <h1 style={{ textAlign: "center", margin: "100px", fontSize: '68px'}}>LogIn</h1>
+        {loading && <h1>loading ... </h1>}
         <Row style={{ width: '20rem', margin:"0 auto"}}>
             <Form onSubmit={submitHandler} >
                 <Form.Group className="mb-3" controlId="formBasicEmail">

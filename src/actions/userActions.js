@@ -1,4 +1,9 @@
-import {USER_SIGNUP_REQUEST, USER_SIGNUP_SUCCESS, USER_SIGNUP_FAIL} from "../constants/userConstants";
+import {
+    USER_SIGNUP_REQUEST,
+    USER_SIGNUP_SUCCESS,
+    USER_SIGNUP_FAIL,
+    USER_LOGIN_REQUEST, USER_LOGIN_SUCCESS, USER_LOGIN_FAIL
+} from "../constants/userConstants";
 import authApi from "../services/authApi";
 export const usersignup = (
     userInput
@@ -19,5 +24,29 @@ export const usersignup = (
             type: USER_SIGNUP_FAIL,
             payload: err.response && err.response.data.method ? err.response.data.method : err.response
         })
+    }
+}
+
+export const login = (
+    loginInfo
+) => async (dispatch) =>{
+    try {
+        dispatch({
+            type: USER_LOGIN_REQUEST
+        })
+        const {data} = await authApi.post('/login', loginInfo)
+        dispatch({
+            type: USER_LOGIN_SUCCESS,
+            payload: data.data
+        })
+        localStorage.setItem("userInfo", JSON.stringify(data.data.user))
+        localStorage.setItem("token", JSON.stringify(data.data.token))
+
+    } catch (err){
+        dispatch({
+            type: USER_LOGIN_FAIL,
+            payload: err.response && err.response.data.method ? err.response.data.method : err.response.data
+        })
+
     }
 }
