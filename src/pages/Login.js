@@ -15,16 +15,16 @@ const Login = () => {
     console.log(email, password)
 
     const userLogin = useSelector((state) => state.userLogin)
-    const {loading, loginInfo, error} = userLogin
+    const {loading, userInfo, error} = userLogin
 
     const submitHandler = async (e) => {
         e.preventDefault();
-        const loginInfo = {
+        const userInput = {
             email,
             password,
         }
-        console.log('loginInfo ? ', loginInfo)
-        dispatch(login(loginInfo))
+        console.log('userInfo ? ', userInput)
+        dispatch(login(userInput))
         // console.log('userInput ? ', userInput)
         // setIsLoading(true);
         //
@@ -41,13 +41,13 @@ const Login = () => {
     }
 
     useEffect(() => {
-        if(loginInfo){
-            navigate('/')
+        if(userInfo){
+            navigate('/profile')
         }
         // if (token) {
         //     navigate('/profile')
         // }
-    }, [navigate, loginInfo]);
+    }, [dispatch, navigate, userInfo]);
 
     // if ( isLoading) {
     //

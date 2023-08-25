@@ -2,7 +2,12 @@ import {
     USER_SIGNUP_REQUEST,
     USER_SIGNUP_SUCCESS,
     USER_SIGNUP_FAIL,
-    USER_LOGIN_REQUEST, USER_LOGIN_SUCCESS, USER_LOGIN_FAIL, USER_LOGOUT
+    USER_LOGIN_REQUEST,
+    USER_LOGIN_SUCCESS,
+    USER_LOGIN_FAIL,
+    USER_LOGOUT,
+    USER_GET_PROFILE_FAIL,
+    USER_GET_PROFILE_REQUEST, USER_GET_PROFILE_SUCCESS
 } from "../constants/userConstants";
 import authApi from "../services/authApi";
 export const usersignup = (
@@ -37,7 +42,7 @@ export const login = (
         const {data} = await authApi.post('/login', loginInfo)
         dispatch({
             type: USER_LOGIN_SUCCESS,
-            payload: data.data
+            payload: data.data.user
         })
         localStorage.setItem("userInfo", JSON.stringify(data.data.user))
         localStorage.setItem("token", JSON.stringify(data.data.token))
@@ -45,9 +50,33 @@ export const login = (
     } catch (err){
         dispatch({
             type: USER_LOGIN_FAIL,
-            payload: err.response && err.response.data.method ? err.response.data.method : err.response.data
+            payload: err.response && err.response.data.message ? err.response.data.message : err.message
         })
 
+    }
+}
+
+export const getUserProfileByToken = () => async (dispatch) => {
+    try {
+        dispatch({
+            type: USER_GET_PROFILE_REQUEST
+        })
+        const token = localStorage.getItem('token')
+        const option = {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        }
+        const {data} = await authApi.get('/', option)
+        dispatch({
+            type: USER_GET_PROFILE_SUCCESS,
+            payload: data.data
+        })
+    } catch (err){
+        dispatch({
+            type: USER_GET_PROFILE_FAIL,
+            payload: err.response && err.response.data.message ? err.response.data.message : err.message
+        })
     }
 }
 
