@@ -1,23 +1,21 @@
-import React, {useEffect} from 'react';
-import {Container, Nav, Navbar, NavDropdown, Row, Spinner} from "react-bootstrap";
-import {useNavigate} from "react-router-dom";
-import useFetchProfile from "../services/FetchProfile";
+import React from 'react';
+import {Container, Nav, Navbar } from "react-bootstrap";
 
 const Header = () => {
-    const token = localStorage.getItem('token');
-    const {data: userInfo, isLoading } = useFetchProfile(token);
+    // const token = localStorage.getItem('token');
+    // const {data: userInfo, isLoading } = useFetchProfile(token);
 
-    if ( isLoading) {
-        return (
-            <Container>
-                <Row className={"justify-content-md-center"} >
-                    <Spinner animation="border" role={"status"}>
-                        <span> Loading ...</span>
-                    </Spinner>
-                </Row>
-            </Container>
-        );
-    }
+    // if ( isLoading) {
+    //     return (
+    //         <Container>
+    //             <Row className={"justify-content-md-center"} >
+    //                 <Spinner animation="border" role={"status"}>
+    //                     <span> Loading ...</span>
+    //                 </Spinner>
+    //             </Row>
+    //         </Container>
+    //     );
+    // }
 
     return (
         <Navbar collapseOnSelect expand="lg" className="bg-body-tertiary sticky-top">
@@ -34,26 +32,26 @@ const Header = () => {
 
 
                     </Nav>
-                    <Nav>
-                        {userInfo
-                            ? (
-                                <NavDropdown title={userInfo.username} id="collasible-nav-dropdown">
-                                <NavDropdown.Item href="#action/3.1">Profile</NavDropdown.Item>
-                                <NavDropdown.Item href="#action/3.2">
-                                    Another action
-                                </NavDropdown.Item>
-                                <NavDropdown.Item href="#action/3.3">Something</NavDropdown.Item>
-                                <NavDropdown.Divider />
-                                <NavDropdown.Item href="#action/3.4">logOut</NavDropdown.Item>
-                            </NavDropdown>
-                            ) : (
-                            <>
+                    {/*<Nav>*/}
+                    {/*    {userInfo*/}
+                    {/*        ? (*/}
+                    {/*            <NavDropdown title={userInfo.username} id="collasible-nav-dropdown">*/}
+                    {/*            <NavDropdown.Item href="#action/3.1">Profile</NavDropdown.Item>*/}
+                    {/*            <NavDropdown.Item href="#action/3.2">*/}
+                    {/*                Another action*/}
+                    {/*            </NavDropdown.Item>*/}
+                    {/*            <NavDropdown.Item href="#action/3.3">Something</NavDropdown.Item>*/}
+                    {/*            <NavDropdown.Divider />*/}
+                    {/*            <NavDropdown.Item href="#action/3.4">logOut</NavDropdown.Item>*/}
+                    {/*        </NavDropdown>*/}
+                    {/*        ) : (*/}
+                    {/*        <>*/}
                                 <Nav.Link href='/login'>LogIn</Nav.Link>
                                 <Nav.Link href='/signup'>SignUp</Nav.Link>
-                            </>
-                        )}
+                    {/*        </>*/}
+                    {/*    )}*/}
 
-                    </Nav>
+                    {/*</Nav>*/}
                 </Navbar.Collapse>
             </Container>
         </Navbar>

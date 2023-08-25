@@ -1,9 +1,6 @@
-import React, {useEffect, useState} from 'react';
-import {Button, Card, Col, Container, Form, ListGroup, Row, Spinner} from "react-bootstrap";
-import axios from "axios";
+import React, {useState} from 'react';
+import {Button, Container, Form, Row, Spinner} from "react-bootstrap";
 import {useNavigate} from "react-router-dom";
-import authApi from "../services/authApi";
-import {useMutation, useQuery} from "@tanstack/react-query";
 
 const Login = () => {
     const navigate = useNavigate();
@@ -16,30 +13,30 @@ const Login = () => {
 
     const submitHandler = async (e) => {
         e.preventDefault();
-        const userInput = {
-            email,
-            password,
-        }
-        console.log('userInput ? ', userInput)
-        setIsLoading(true);
-
-        const {data, status} = await authApi.post("/login", userInput)
-        console.log(" data : " , data)
-        console.log(" status : " , status)
-        if (status === 200 ){
-
-            localStorage.setItem('token', data.data.token)
-
-            navigate('/profile');
-            setIsLoading(false)
-        }
+        // const userInput = {
+        //     email,
+        //     password,
+        // }
+        // console.log('userInput ? ', userInput)
+        // setIsLoading(true);
+        //
+        // const {data, status} = await authApi.post("/login", userInput)
+        // console.log(" data : " , data)
+        // console.log(" status : " , status)
+        // if (status === 200 ){
+        //
+        //     localStorage.setItem('token', data.data.token)
+        //
+        //     navigate('/profile');
+        //     setIsLoading(false)
+        // }
     }
 
-    useEffect(() => {
-        if (token) {
-            navigate('/profile')
-        }
-    }, []);
+    // useEffect(() => {
+    //     if (token) {
+    //         navigate('/profile')
+    //     }
+    // }, []);
 
     if ( isLoading) {
 

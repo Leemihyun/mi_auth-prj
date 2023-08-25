@@ -5,14 +5,18 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import {ReactQueryProvider} from "./Provider";
 import {ReactQueryDevtools} from "@tanstack/react-query-devtools";
+import {Provider} from "react-redux";
+import store from "./store";
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-      <ReactQueryProvider>
-          <App />
-          <ReactQueryDevtools initialIsOpen={false}/>
-      </ReactQueryProvider>
+      <Provider store={store}>
+          <ReactQueryProvider>
+              <App />
+              <ReactQueryDevtools initialIsOpen={false}/>
+          </ReactQueryProvider>
+      </Provider>
   </React.StrictMode>
 );
 

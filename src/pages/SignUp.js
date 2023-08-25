@@ -1,19 +1,19 @@
 import React, {useEffect, useState} from 'react';
-import {Button, Card, Col, Container, Form, InputGroup, Row} from "react-bootstrap";
-import {ReCAPTCHA} from "react-google-recaptcha";
-import axios from "axios";
+import {Button, Container, Form, InputGroup, Row} from "react-bootstrap";
 import {useNavigate} from "react-router-dom";
-import authApi from "../services/authApi";
+import {useDispatch, useSelector} from "react-redux";
+import {usersignup} from "../actions/userActions";
 
 const SignUp = () => {
     const navigate = useNavigate();
+    const dispatch = useDispatch()
 
-    const key = "6Lf2bYEnAAAAAB51vI1gykC1n08ggYdIJbVaTOpl";
-    const [captchaIsDone, setCaptchaDone] = useState(false);
-    function onChange(value) {
-        console.log('Captcha value:', value);
-        setCaptchaDone(true);
-    }
+    // const key = "6Lf2bYEnAAAAAB51vI1gykC1n08ggYdIJbVaTOpl";
+    // const [captchaIsDone, setCaptchaDone] = useState(false);
+    // function onChange(value) {
+    //     console.log('Captcha value:', value);
+    //     setCaptchaDone(true);
+    // }
 
     const [email, setEmail] = useState("")
     const [emailProvider, setEmailProvider] = useState("")
@@ -23,6 +23,9 @@ const SignUp = () => {
     const [isMarketingAgree, setIsMarketingAgree] = useState(false)
     const [isPersonalInfoAgree, setIsPersonalInfoAgree] = useState(false)
     const token = localStorage.getItem('token')
+
+    const userRegister = useSelector((state) => state.userRegister)
+    const {loading, userInfo, error} = userRegister
 
     const submitHandler = async (e) => {
         e.preventDefault();
@@ -37,26 +40,32 @@ const SignUp = () => {
             isPersonalInfoAgree
         }
         console.log('userInput ? ', userInput)
+        // action 호출
+        dispatch(usersignup(userInput))
 
-        const {data, status} = await authApi.post("/signup", userInput)
-        console.log(" data : " , data)
-        console.log(" status : " , status)
-        if (status === 201){
-            navigate('/login')
-        }
+        // const {data, status} = await authApi.post("/signup", userInput)
+        // console.log(" data : " , data)
+        // console.log(" status : " , status)
+        // if (status === 201){
+        //     navigate('/login')
+        // }
     }
 
     useEffect(() => {
-        if (token) {
-            navigate('/profile')
+        if(userInfo){
+            navigate('/login')
         }
-    }, []);
+        // if (token) {
+        //     navigate('/profile')
+        // }
+    }, [navigate, userInfo]);
 
     return (
         <Container
             className="flex-column align-items-center justify-content-center"
             style={{marginBottom: "100px"}}>
             <h1 style={{ textAlign: "center", margin: "100px", fontSize: '68px'}}>SignUp</h1>
+            {loading && <h1>loading ... </h1>}
             <Row style={{ width: '30rem', margin:"0 auto"}}>
                 <Form onSubmit={submitHandler} >
                     {/** SNS SignUp Feild */}
@@ -95,7 +104,7 @@ const SignUp = () => {
                                 onChange={(e) => setEmailProvider(e.target.value)}
                             >
                                 <option>server select menu</option>
-                                <option value="google.com">google.com</option>
+                                <option value="gmail.com">gmail.com</option>
                                 <option value="yahoo.co.jp">yahoo.co.jp</option>
                             </Form.Select>
                         </InputGroup>
@@ -177,10 +186,10 @@ const SignUp = () => {
                                 label="イベント、クーポンなどお知らせおよびSMS受信"
                             />
                         </div>
-                        <ReCAPTCHA
-                            sitekey={key}
-                            onChange={onChange}
-                        />
+                        {/*<ReCAPTCHA*/}
+                        {/*    sitekey={key}*/}
+                        {/*    onChange={onChange}*/}
+                        {/*/>*/}
                         <Button variant="primary" type="submit" style={{width: '100%', marginTop:"30px"}}>
                             会員登録
                         </Button>
