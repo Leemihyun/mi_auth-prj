@@ -2,7 +2,7 @@ import {
     USER_SIGNUP_REQUEST,
     USER_SIGNUP_SUCCESS,
     USER_SIGNUP_FAIL,
-    USER_LOGIN_REQUEST, USER_LOGIN_SUCCESS, USER_LOGIN_FAIL
+    USER_LOGIN_REQUEST, USER_LOGIN_SUCCESS, USER_LOGIN_FAIL, USER_LOGOUT
 } from "../constants/userConstants";
 import authApi from "../services/authApi";
 export const usersignup = (
@@ -49,4 +49,11 @@ export const login = (
         })
 
     }
+}
+
+export const logout = () => (dispatch) => {
+    localStorage.removeItem('userInfo')
+    localStorage.removeItem('token')
+    dispatch({ type: USER_LOGOUT})
+    document.location.href = '/login'
 }

@@ -1,5 +1,7 @@
 import React from 'react';
-import {Container, Nav, Navbar } from "react-bootstrap";
+import {Container, Nav, Navbar, NavDropdown} from "react-bootstrap";
+import {useDispatch, useSelector} from "react-redux";
+import {logout} from "../actions/userActions";
 
 const Header = () => {
     // const token = localStorage.getItem('token');
@@ -17,6 +19,14 @@ const Header = () => {
     //     );
     // }
 
+    const dispatch = useDispatch()
+    const userLogin = useSelector(state => state.userLogin)
+    const {userInfo} = userLogin
+
+    const logoutHandler = () => {
+        dispatch(logout());
+    }
+
     return (
         <Navbar collapseOnSelect expand="lg" className="bg-body-tertiary sticky-top">
             <Container>
@@ -32,26 +42,26 @@ const Header = () => {
 
 
                     </Nav>
-                    {/*<Nav>*/}
-                    {/*    {userInfo*/}
-                    {/*        ? (*/}
-                    {/*            <NavDropdown title={userInfo.username} id="collasible-nav-dropdown">*/}
-                    {/*            <NavDropdown.Item href="#action/3.1">Profile</NavDropdown.Item>*/}
-                    {/*            <NavDropdown.Item href="#action/3.2">*/}
-                    {/*                Another action*/}
-                    {/*            </NavDropdown.Item>*/}
-                    {/*            <NavDropdown.Item href="#action/3.3">Something</NavDropdown.Item>*/}
-                    {/*            <NavDropdown.Divider />*/}
-                    {/*            <NavDropdown.Item href="#action/3.4">logOut</NavDropdown.Item>*/}
-                    {/*        </NavDropdown>*/}
-                    {/*        ) : (*/}
-                    {/*        <>*/}
+                    <Nav>
+                        {userInfo
+                            ? (
+                                <NavDropdown title={userInfo.username} id="collasible-nav-dropdown">
+                                <NavDropdown.Item href="#action/3.1">Profile</NavDropdown.Item>
+                                <NavDropdown.Item href="#action/3.2">
+                                    Another action
+                                </NavDropdown.Item>
+                                <NavDropdown.Item href="#action/3.3">Something</NavDropdown.Item>
+                                <NavDropdown.Divider />
+                                <NavDropdown.Item onClick={logoutHandler}>logOut</NavDropdown.Item>
+                            </NavDropdown>
+                            ) : (
+                            <>
                                 <Nav.Link href='/login'>LogIn</Nav.Link>
                                 <Nav.Link href='/signup'>SignUp</Nav.Link>
-                    {/*        </>*/}
-                    {/*    )}*/}
+                            </>
+                        )}
 
-                    {/*</Nav>*/}
+                    </Nav>
                 </Navbar.Collapse>
             </Container>
         </Navbar>

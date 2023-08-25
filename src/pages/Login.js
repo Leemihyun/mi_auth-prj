@@ -42,7 +42,7 @@ const Login = () => {
 
     useEffect(() => {
         if(loginInfo){
-            navigate('/profile')
+            navigate('/')
         }
         // if (token) {
         //     navigate('/profile')
