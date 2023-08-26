@@ -3,6 +3,7 @@ import {Button, Container, Form, InputGroup, Row} from "react-bootstrap";
 import {useNavigate} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
 import {usersignup} from "../actions/userActions";
+import authApi from "../services/authApi";
 
 const SignUp = () => {
     const navigate = useNavigate();
@@ -19,6 +20,9 @@ const SignUp = () => {
     const [emailProvider, setEmailProvider] = useState("")
     const [username, setUsername] = useState("")
     const [password, setPassword] = useState("")
+    const [code, setCode] = useState("")
+    const [show, setShow] = useState(false)
+    const [emailChecked, setEmailChecked] = useState(false)
     const [confirmPassword, setConfirmPassword] = useState("")
     const [isMarketingAgree, setIsMarketingAgree] = useState(false)
     const [isPersonalInfoAgree, setIsPersonalInfoAgree] = useState(false)
@@ -27,8 +31,15 @@ const SignUp = () => {
     const userRegister = useSelector((state) => state.userRegister)
     const {loading, userInfo, error} = userRegister
 
+    // 로그인되있을시 signup 접속시 profile로 이동
+    const userLogin = useSelector((state)=> state.userLogin)
+    const {userInfo: user} = userLogin
+
     const submitHandler = async (e) => {
         e.preventDefault();
+        if(!emailChecked){
+            alert("Please check email verification")
+        }
         if(password !== confirmPassword){
             alert("Password do not matched")
         }
@@ -51,9 +62,46 @@ const SignUp = () => {
         // }
     }
 
+    // email 검증하기
+    const emailSendHandler = async ()=> {
+        try {
+            const userInput = {
+                email: email + "@" + emailProvider
+            }
+            const {status} = await authApi.post('/email/send', userInput)
+            if(status === 201){
+                alert('please checkout your email')
+                setShow(true)
+            }
+        } catch (err){
+            console.log(err.message)
+        }
+    }
+    // email code 검증
+    const emailVerifyHandler = async () =>{
+        try {
+            const userInput = {
+                email: email + "@" + emailProvider,
+                code
+            }
+            const {status} = await authApi.post('/email/check', userInput)
+            if(status === 201){
+                alert('ok')
+                setShow(false)
+                setEmailChecked(true)
+            }
+        } catch (err){
+            console.log(err.message)
+        }
+    }
+
+
     useEffect(() => {
         if(userInfo){
             navigate('/login')
+        }
+        if(user){
+            navigate('/profile')
         }
         // if (token) {
         //     navigate('/profile')
@@ -108,9 +156,23 @@ const SignUp = () => {
                                 <option value="yahoo.co.jp">yahoo.co.jp</option>
                             </Form.Select>
                         </InputGroup>
-                        <Button variant="outline-info" type="submit" style={{width: '100%'}}>
+                        <Button variant="outline-info" onClick={emailSendHandler} style={{width: '100%'}} disabled={emailChecked}>
                             E-mail 認証
                         </Button>
+                        { show &&
+                            (
+                                <>
+                                    <Form.Control
+                                        value={code}
+                                        onChange={(e) => setCode(e.target.value)}
+                                    />
+                                    <Form.Label type="text"　className="mt-3">Enter your email code</Form.Label>
+                                    <Button variant="outline-info" onClick={emailVerifyHandler} style={{width: '100%'}}>
+                                        E-mail Code 検証
+                                    </Button>
+                                </>
+                            )
+                        }
                     </Form.Group>
                     {/** Password Feild */}
                     <Form.Group className="mb-4">

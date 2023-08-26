@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Button, Container, Form, Row, Spinner} from "react-bootstrap";
+import {Button, Container, Form, Row} from "react-bootstrap";
 import {useNavigate} from "react-router-dom";
 import {login} from "../actions/userActions";
 import {useDispatch, useSelector} from "react-redux";
