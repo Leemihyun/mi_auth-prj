@@ -3,27 +3,28 @@ import {Button, Container, Form, Row} from "react-bootstrap";
 import {useNavigate} from "react-router-dom";
 import {login} from "../actions/userActions";
 import {useDispatch, useSelector} from "react-redux";
+import {useForm} from "react-hook-form";
 
 const Login = () => {
     const navigate = useNavigate();
-    // const [isLoading, setIsLoading] = useState(false)
     const dispatch = useDispatch()
 
-    const [email, setEmail] = useState("")
-    const [password, setPassword] = useState("")
-    const token = localStorage.getItem('token')
-    console.log(email, password)
+    // hook form setting
+    const {register, handleSubmit} = useForm();
+
+    // const [email, setEmail] = useState("")
+    // const [password, setPassword] = useState("")
 
     const userLogin = useSelector((state) => state.userLogin)
     const {loading, userInfo, error} = userLogin
 
-    const submitHandler = async (e) => {
-        e.preventDefault();
+    // data: 사용자입력값
+    const submitHandler = (data) => {
         const userInput = {
-            email,
-            password,
+            email: data.email,
+            password: data.password,
         }
-        console.log('userInfo ? ', userInput)
+        // console.log('userInfo ? ', userInput)
         dispatch(login(userInput))
         // console.log('userInput ? ', userInput)
         // setIsLoading(true);
@@ -67,14 +68,14 @@ const Login = () => {
         <h1 style={{ textAlign: "center", margin: "100px", fontSize: '68px'}}>LogIn</h1>
         {loading && <h1>loading ... </h1>}
         <Row style={{ width: '20rem', margin:"0 auto"}}>
-            <Form onSubmit={submitHandler} >
+            <Form onSubmit={handleSubmit(submitHandler)} >
                 <Form.Group className="mb-3" controlId="formBasicEmail">
                     <Form.Label>Email address</Form.Label>
                     <Form.Control
                         type="email"
                         placeholder="Enter email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}/>
+                        {...register('email')}
+                    />
                 </Form.Group>
 
                 <Form.Group className="mb-3" controlId="formBasicPassword">
@@ -82,8 +83,8 @@ const Login = () => {
                     <Form.Control
                         type="password"
                         placeholder="Password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)} />
+                        {...register('password')}
+                    />
                 </Form.Group>
                 {/*<Form.Group className="mb-3" controlId="formBasicCheckbox">*/}
                 {/*    <Form.Check type="checkbox" label="Check me out" />*/}
