@@ -13,16 +13,8 @@ const SignUp = () => {
     // hook form setting
     const {getValues, register, handleSubmit} = useForm();
 
-    // const [email, setEmail] = useState("")
-    // const [emailProvider, setEmailProvider] = useState("")
-    // const [username, setUsername] = useState("")
-    // const [password, setPassword] = useState("")
-    // const [code, setCode] = useState("")
     const [show, setShow] = useState(false)
     const [emailChecked, setEmailChecked] = useState(false)
-    // const [confirmPassword, setConfirmPassword] = useState("")
-    // const [isMarketingAgree, setIsMarketingAgree] = useState(false)
-    // const [isPersonalInfoAgree, setIsPersonalInfoAgree] = useState(false)
 
     const userRegister = useSelector((state) => state.userRegister)
     const {loading, userInfo, error} = userRegister
@@ -58,15 +50,14 @@ const SignUp = () => {
         // }
     }
 
-    const [ email,emailProvider, code ] = [getValues('email'), getValues('emailProvider'), getValues('code')]
-    // email 검증하기
     const emailVerify = useSelector((state) => state.emailVerify)
     const {loading: emailVerifyLoading, success: emailVerifySuccess} = emailVerify
 
-    const emailSendHandler = ()=> {
+    const emailSendHandler = (data)=> {
         const userInput = {
-            email: email + "@" + emailProvider
+            email: data.email + "@" + data.emailProvider
         }
+        console.log('emailSendHandler > userInput :', userInput)
         dispatch(emailSendVerify(userInput))
         // try {
         //     const userInput = {
@@ -84,11 +75,10 @@ const SignUp = () => {
     // email code 검증
     const emailCodeVerify = useSelector((state) => state.emailCodeVerify)
     const {loading: emailCodeVerifyLoading, success: emailCodeVerifySuccess} = emailCodeVerify
-    const emailVerifyHandler = (e) =>{
-        e.preventDefault();
+    const emailVerifyHandler = (data) =>{
         const userInput = {
-            email: email + "@" + emailProvider,
-            code
+            email: data.email + "@" + data.emailProvider,
+            code: data.code
         }
         console.log('userInput ? ', userInput)
         dispatch(emailCodeVerifyFuntion(userInput))
@@ -113,20 +103,24 @@ const SignUp = () => {
     useEffect(() => {
         if(userInfo){
             navigate('/login')
+            return;
         }
         if(user){
             navigate('/profile')
+            return;
         }
         if(emailVerifySuccess){
             alert('please checkout your email')
             setShow(true)
+            return;
         }
         if(emailCodeVerifySuccess){
             alert('your email code is ok')
             setShow(false)
             setEmailChecked(true)
+            return;
         }
-    }, [navigate, userInfo, emailVerifySuccess, emailCodeVerifySuccess, dispatch]);
+    }, [navigate, userInfo, emailVerifySuccess, emailCodeVerifySuccess]);
 
     return (
         <Container
@@ -173,7 +167,7 @@ const SignUp = () => {
                                 <option value="yahoo.co.jp">yahoo.co.jp</option>
                             </Form.Select>
                         </InputGroup>
-                        <Button variant="outline-info" onClick={emailSendHandler} style={{width: '100%'}} disabled={emailChecked}>
+                        <Button variant="outline-info" onClick={handleSubmit(emailSendHandler)} style={{width: '100%'}} disabled={emailChecked}>
                             E-mail 認証
                         </Button>
                         { emailVerifyLoading && <Spinner />}
@@ -184,7 +178,7 @@ const SignUp = () => {
                                         {...register('code')}
                                     />
                                     <Form.Label type="text"　className="mt-3">Enter your email code</Form.Label>
-                                    <Button variant="outline-info" onClick={emailVerifyHandler} style={{width: '100%'}}>
+                                    <Button variant="outline-info" onClick={handleSubmit(emailVerifyHandler)} style={{width: '100%'}}>
                                         E-mail Code 検証
                                     </Button>
                                     {emailCodeVerifyLoading && <Spinner /> }
