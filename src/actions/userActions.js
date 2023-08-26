@@ -7,7 +7,12 @@ import {
     USER_LOGIN_FAIL,
     USER_LOGOUT,
     USER_GET_PROFILE_FAIL,
-    USER_GET_PROFILE_REQUEST, USER_GET_PROFILE_SUCCESS
+    USER_GET_PROFILE_REQUEST,
+    USER_GET_PROFILE_SUCCESS,
+    EMAIL_VERIFY_FAIL,
+    EMAIL_VERIFY_REQUEST,
+    EMAIL_VERIFY_SUCCESS,
+    EMAIL_CODE_VERIFY_FAIL, EMAIL_CODE_VERIFY_REQUEST, EMAIL_CODE_VERIFY_SUCCESS
 } from "../constants/userConstants";
 import authApi from "../services/authApi";
 export const usersignup = (
@@ -75,6 +80,47 @@ export const getUserProfileByToken = () => async (dispatch) => {
     } catch (err){
         dispatch({
             type: USER_GET_PROFILE_FAIL,
+            payload: err.response && err.response.data.message ? err.response.data.message : err.message
+        })
+    }
+}
+
+export const emailSendVerify = (email) => async(dispatch) => {
+    try {
+        dispatch({
+            type: EMAIL_VERIFY_REQUEST
+        })
+        const {data, status} = await authApi.post('/email/send', email)
+        if( status === 201){
+            dispatch({
+                type: EMAIL_VERIFY_SUCCESS,
+                payload: data.data
+            })
+        }
+    } catch (err){
+        dispatch({
+            type: EMAIL_VERIFY_FAIL,
+            payload: err.response && err.response.data.message ? err.response.data.message : err.message
+        })
+    }
+}
+
+export const emailCodeVerifyFuntion = (userInput) => async(dispatch) => {
+    try {
+        dispatch({
+            type: EMAIL_CODE_VERIFY_REQUEST
+        })
+       const{data, status} =  await authApi.post('/email/check', userInput)
+        if( status === 201){
+            dispatch({
+                type: EMAIL_CODE_VERIFY_SUCCESS,
+                payload: data.data
+            })
+        }
+
+    } catch (err) {
+        dispatch({
+            type: EMAIL_CODE_VERIFY_FAIL,
             payload: err.response && err.response.data.message ? err.response.data.message : err.message
         })
     }

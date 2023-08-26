@@ -1,8 +1,8 @@
 import React, {useEffect, useState} from 'react';
-import {Button, Container, Form, InputGroup, Row} from "react-bootstrap";
+import {Button, Container, Form, InputGroup, Row, Spinner} from "react-bootstrap";
 import {useNavigate} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
-import {usersignup} from "../actions/userActions";
+import {emailCodeVerify, emailCodeVerifyFuntion, emailSendVerify, usersignup} from "../actions/userActions";
 import authApi from "../services/authApi";
 
 const SignUp = () => {
@@ -63,36 +63,52 @@ const SignUp = () => {
     }
 
     // email 검증하기
-    const emailSendHandler = async ()=> {
-        try {
-            const userInput = {
-                email: email + "@" + emailProvider
-            }
-            const {status} = await authApi.post('/email/send', userInput)
-            if(status === 201){
-                alert('please checkout your email')
-                setShow(true)
-            }
-        } catch (err){
-            console.log(err.message)
+    const emailVerify = useSelector((state) => state.emailVerify)
+    const {loading: emailVerifyLoading, success: emailVerifySuccess} = emailVerify
+    const emailSendHandler = (e)=> {
+        e.preventDefault();
+        const userInput = {
+            email: email + "@" + emailProvider
         }
+        dispatch(emailSendVerify(userInput))
+        // try {
+        //     const userInput = {
+        //         email: email + "@" + emailProvider
+        //     }
+        //     const {status} = await authApi.post('/email/send', userInput)
+        //     if(status === 201){
+        //         alert('please checkout your email')
+        //         setShow(true)
+        //     }
+        // } catch (err){
+        //     console.log(err.message)
+        // }
     }
     // email code 검증
-    const emailVerifyHandler = async () =>{
-        try {
-            const userInput = {
-                email: email + "@" + emailProvider,
-                code
-            }
-            const {status} = await authApi.post('/email/check', userInput)
-            if(status === 201){
-                alert('ok')
-                setShow(false)
-                setEmailChecked(true)
-            }
-        } catch (err){
-            console.log(err.message)
+    const emailCodeVerify = useSelector((state) => state.emailCodeVerify)
+    const {loading: emailCodeVerifyLoading, success: emailCodeVerifySuccess} = emailCodeVerify
+    const emailVerifyHandler = (e) =>{
+        e.preventDefault();
+        const userInput = {
+            email: email + "@" + emailProvider,
+            code
         }
+        dispatch(emailCodeVerifyFuntion(userInput))
+
+        // try {
+        //     const userInput = {
+        //         email: email + "@" + emailProvider,
+        //         code
+        //     }
+        //     const {status} = await authApi.c
+        //     if(status === 201){
+        //         alert('ok')
+        //         setShow(false)
+        //         setEmailChecked(true)
+        //     }
+        // } catch (err){
+        //     console.log(err.message)
+        // }
     }
 
 
@@ -103,10 +119,16 @@ const SignUp = () => {
         if(user){
             navigate('/profile')
         }
-        // if (token) {
-        //     navigate('/profile')
-        // }
-    }, [navigate, userInfo]);
+        if(emailVerifySuccess){
+            alert('please checkout your email')
+            setShow(true)
+        }
+        if(emailCodeVerifySuccess){
+            alert('your email code is ok')
+            setShow(false)
+            setEmailChecked(true)
+        }
+    }, [navigate, userInfo, emailVerifySuccess, emailCodeVerifySuccess, dispatch]);
 
     return (
         <Container
@@ -159,6 +181,7 @@ const SignUp = () => {
                         <Button variant="outline-info" onClick={emailSendHandler} style={{width: '100%'}} disabled={emailChecked}>
                             E-mail 認証
                         </Button>
+                        { emailVerifyLoading && <Spinner />}
                         { show &&
                             (
                                 <>
@@ -170,6 +193,7 @@ const SignUp = () => {
                                     <Button variant="outline-info" onClick={emailVerifyHandler} style={{width: '100%'}}>
                                         E-mail Code 検証
                                     </Button>
+                                    {emailCodeVerifyLoading && <Spinner /> }
                                 </>
                             )
                         }
