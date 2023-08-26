@@ -4,29 +4,25 @@ import {useNavigate} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
 import {emailCodeVerify, emailCodeVerifyFuntion, emailSendVerify, usersignup} from "../actions/userActions";
 import authApi from "../services/authApi";
+import {useForm} from "react-hook-form";
 
 const SignUp = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch()
 
-    // const key = "6Lf2bYEnAAAAAB51vI1gykC1n08ggYdIJbVaTOpl";
-    // const [captchaIsDone, setCaptchaDone] = useState(false);
-    // function onChange(value) {
-    //     console.log('Captcha value:', value);
-    //     setCaptchaDone(true);
-    // }
+    // hook form setting
+    const {getValues, register, handleSubmit} = useForm();
 
-    const [email, setEmail] = useState("")
-    const [emailProvider, setEmailProvider] = useState("")
-    const [username, setUsername] = useState("")
-    const [password, setPassword] = useState("")
-    const [code, setCode] = useState("")
+    // const [email, setEmail] = useState("")
+    // const [emailProvider, setEmailProvider] = useState("")
+    // const [username, setUsername] = useState("")
+    // const [password, setPassword] = useState("")
+    // const [code, setCode] = useState("")
     const [show, setShow] = useState(false)
     const [emailChecked, setEmailChecked] = useState(false)
-    const [confirmPassword, setConfirmPassword] = useState("")
-    const [isMarketingAgree, setIsMarketingAgree] = useState(false)
-    const [isPersonalInfoAgree, setIsPersonalInfoAgree] = useState(false)
-    const token = localStorage.getItem('token')
+    // const [confirmPassword, setConfirmPassword] = useState("")
+    // const [isMarketingAgree, setIsMarketingAgree] = useState(false)
+    // const [isPersonalInfoAgree, setIsPersonalInfoAgree] = useState(false)
 
     const userRegister = useSelector((state) => state.userRegister)
     const {loading, userInfo, error} = userRegister
@@ -35,20 +31,20 @@ const SignUp = () => {
     const userLogin = useSelector((state)=> state.userLogin)
     const {userInfo: user} = userLogin
 
-    const submitHandler = async (e) => {
-        e.preventDefault();
+    const submitHandler =  (data) => {
+        console.log('data ? ', data)
         if(!emailChecked){
             alert("Please check email verification")
         }
-        if(password !== confirmPassword){
+        if(data.password !== data.confirmPassword){
             alert("Password do not matched")
         }
         const userInput = {
-            email: email + "@" + emailProvider,
-            username,
-            password,
-            isMarketingAgree,
-            isPersonalInfoAgree
+            email: data.email + "@" + data.emailProvider,
+            username: data.username,
+            password: data.password,
+            isMarketingAgree: data.isMarketingAgree,
+            isPersonalInfoAgree: data.isPersonalInfoAgree
         }
         console.log('userInput ? ', userInput)
         // action 호출
@@ -62,11 +58,12 @@ const SignUp = () => {
         // }
     }
 
+    const [ email,emailProvider, code ] = [getValues('email'), getValues('emailProvider'), getValues('code')]
     // email 검증하기
     const emailVerify = useSelector((state) => state.emailVerify)
     const {loading: emailVerifyLoading, success: emailVerifySuccess} = emailVerify
-    const emailSendHandler = (e)=> {
-        e.preventDefault();
+
+    const emailSendHandler = ()=> {
         const userInput = {
             email: email + "@" + emailProvider
         }
@@ -93,6 +90,7 @@ const SignUp = () => {
             email: email + "@" + emailProvider,
             code
         }
+        console.log('userInput ? ', userInput)
         dispatch(emailCodeVerifyFuntion(userInput))
 
         // try {
@@ -137,7 +135,7 @@ const SignUp = () => {
             <h1 style={{ textAlign: "center", margin: "100px", fontSize: '68px'}}>SignUp</h1>
             {loading && <h1>loading ... </h1>}
             <Row style={{ width: '30rem', margin:"0 auto"}}>
-                <Form onSubmit={submitHandler} >
+                <Form onSubmit={handleSubmit(submitHandler)} >
                     {/** SNS SignUp Feild */}
                     <div className="flex-column align-items-center justify-content-center text-center">
                         <div className="text-muted" style={{fontSize:"14px"}}>SNSで簡単会員登録</div>
@@ -162,16 +160,13 @@ const SignUp = () => {
                         <Form.Label>Email address</Form.Label>
                         <InputGroup className="input-group mb-3">
                             <Form.Control
+                                {...register('email')}
                                 placeholder="E-mail"
-                                id="email"
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
                             />
                             <span className="input-group-text">@</span>
                             <Form.Select
                                 aria-label="Default select example"
-                                value={emailProvider}
-                                onChange={(e) => setEmailProvider(e.target.value)}
+                                {...register('emailProvider')}
                             >
                                 <option>server select menu</option>
                                 <option value="gmail.com">gmail.com</option>
@@ -186,8 +181,7 @@ const SignUp = () => {
                             (
                                 <>
                                     <Form.Control
-                                        value={code}
-                                        onChange={(e) => setCode(e.target.value)}
+                                        {...register('code')}
                                     />
                                     <Form.Label type="text"　className="mt-3">Enter your email code</Form.Label>
                                     <Button variant="outline-info" onClick={emailVerifyHandler} style={{width: '100%'}}>
@@ -203,18 +197,14 @@ const SignUp = () => {
                         <Form.Label>Password</Form.Label>
                         <Form.Text type="text"　className="text-muted" style={{fontSize:"14px"}}>　*英語＋数字の8文字以上</Form.Text>
                         <Form.Control
+                            {...register('password')}
                             placeholder="password"
-                            id="password"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
                             type="password"
                         />
                         <Form.Label type="text"　className="mt-3">Password Check</Form.Label>
                         <Form.Control
+                            {...register('confirmPassword')}
                             placeholder="password check"
-                            id="passwordCheck"
-                            value={confirmPassword}
-                            onChange={(e) => setConfirmPassword(e.target.value)}
                             type="password"
                         />
                     </Form.Group>
@@ -223,10 +213,8 @@ const SignUp = () => {
                         <Form.Label>Nick Name</Form.Label>
                         <Form.Text type="text"　className="text-muted" style={{fontSize:"14px"}}>　*2~15文字以上,他ユーザーと重複禁止</Form.Text>
                         <Form.Control
+                            {...register('username')}
                             placeholder="user nick name"
-                            id="nickname"
-                            value={username}
-                            onChange={(e) => setUsername(e.target.value)}
                         />
                     </Form.Group>
                     {/** Agree Feild */}
@@ -234,48 +222,41 @@ const SignUp = () => {
                         <Form.Label>規約同意</Form.Label>
                         <div className="border p-3">
                             <Form.Check // prettier-ignore
+                                {...register('allAgree')}
                                 type="checkbox"
-                                id="allAgree"
                                 label="All agree"
                                 className="fw-semibold"
                             />
                             <hr />
                             <Form.Check // prettier-ignore
+                                {...register('older14')}
                                 type="checkbox"
-                                id="older14"
                                 label="14歳以上であること"
                             />
                             <Form.Check // prettier-ignore
+                                {...register('contract')}
                                 type="checkbox"
-                                // id="older14"
                                 label="規約内容"
                             />
                             <Form.Check // prettier-ignore
+                                {...register('isPersonalInfoAgree')}
                                 type="checkbox"
-                                // id="older14"
                                 label="個人情報収集"
                                 required
-                                value={isPersonalInfoAgree}
-                                onChange={(e) => setIsPersonalInfoAgree(!isPersonalInfoAgree)}
                             />
                             <Form.Check // prettier-ignore
+                                {...register('isMarketingAgree')}
                                 type="checkbox"
                                 // id="older14"
                                 label="個人情報マーケティング活用"
                                 required
-                                value={isMarketingAgree}
-                                onChange={(e) => setIsMarketingAgree(!isMarketingAgree)}
                             />
                             <Form.Check // prettier-ignore
+                                {...register('smsAgree')}
                                 type="checkbox"
-                                id="older14"
                                 label="イベント、クーポンなどお知らせおよびSMS受信"
                             />
                         </div>
-                        {/*<ReCAPTCHA*/}
-                        {/*    sitekey={key}*/}
-                        {/*    onChange={onChange}*/}
-                        {/*/>*/}
                         <Button variant="primary" type="submit" style={{width: '100%', marginTop:"30px"}}>
                             会員登録
                         </Button>

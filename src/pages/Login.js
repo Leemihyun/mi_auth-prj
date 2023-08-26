@@ -20,12 +20,12 @@ const Login = () => {
 
     // data: 사용자입력값
     const submitHandler = (data) => {
-        const userInput = {
-            email: data.email,
-            password: data.password,
-        }
+        // const userInput = {
+        //     email: data.email,
+        //     password: data.password,
+        // }
         // console.log('userInfo ? ', userInput)
-        dispatch(login(userInput))
+        dispatch(login(data))
         // console.log('userInput ? ', userInput)
         // setIsLoading(true);
         //
